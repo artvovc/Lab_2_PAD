@@ -1,7 +1,15 @@
 package com.node;
 
+import com.enums.RequestType;
+import com.enums.WhoRequest;
+import com.model.Empl;
+import com.model.Model;
+import com.util.JSONUtil;
+
 import java.io.IOException;
 import java.net.*;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Artemie on 04.10.2016.
@@ -16,6 +24,14 @@ public class Node {
     private DatagramSocket serverSocket;
     private SocketAddress socketAddress;
     private MulticastSocket multicastSocket;
+    private WhoRequest whoRequest;
+    private RequestType requestType;
+    private Model model = new Model();
+    private String message;
+    private int countConnections;
+    private Model maven = new Model();
+    private int countNodes;
+
 
     public Node(String hostname, int _UDPServer_port) throws Exception {
         this._UDPServer_port = _UDPServer_port;
@@ -33,11 +49,13 @@ public class Node {
         socketAddress = new InetSocketAddress(this.hostname, this._UDPServer_port);
         serverSocket = new DatagramSocket(this._UDPServer_port);
         serverSocket.setBroadcast(true);
+        maven.setCountConnections(0);
     }
 
     public void runUDPServer() {
         try {
             UDPServerStandardConfig();
+            int temp = 0;
             while (true) {
 //                System.out.println("Server can receive now");
                 byte[] receiveBuff = new byte[1024];
@@ -47,11 +65,31 @@ public class Node {
 //                System.out.println(receivePacket.getAddress() + " " + receivePacket.getPort());
 //                System.out.println(new String(receivePacket.getData()));
                 String msg = new String(receivePacket.getData());
+                Model model = (Model) JSONUtil.getJAVAObjectfromJSONString(msg, Model.class);
 
+                if (model.getWhoRequest() == WhoRequest.USER && Objects.equals(model.getMessage(), "maven")) {
+                    msg = "";
+                    model = new Model();
+                    model.setWhoRequest(WhoRequest.NODE);
+                    model.setMessage("getCount");
+                    msg = JSONUtil.getJSONStringfromJAVAObject(model);
+                    DatagramPacket sendPacket = new DatagramPacket(msg.getBytes(), msg.getBytes().length, InetAddress.getByName("233.0.0.1"), receivePacket.getPort());
+                    serverSocket.send(sendPacket);
+                }
+                if (Objects.equals(model.getMessage(), "count")) {
+                    if (maven.getCountConnections() < model.getCountConnections())
+                        maven = model;
+                    temp++;
+                    msg = JSONUtil.getJSONStringfromJAVAObject(new Model());
+                    System.out.println(msg);
+                    if(temp>=countNodes)
+                        System.out.println("MAVEN BLEATI"+JSONUtil.getJSONStringfromJAVAObject(maven));
+                    DatagramPacket sendPacket = new DatagramPacket(msg.getBytes(), msg.getBytes().length, InetAddress.getByName("233.0.0.1"), receivePacket.getPort());
+                    serverSocket.send(sendPacket);
+                }
 
+                if (model.getMessage() == null) msg = JSONUtil.getJSONStringfromJAVAObject(new Model());
 
-                DatagramPacket sendPacket = new DatagramPacket(msg.getBytes(), msg.getBytes().length, InetAddress.getByName("233.0.0.1"), receivePacket.getPort());
-                serverSocket.send(sendPacket);
 //                System.out.println("Server sended packet");
             }
         } catch (Exception e) {
@@ -68,15 +106,25 @@ public class Node {
                 data = new byte[0];
                 data = new byte[1024];
 
-                if(!this.onlyListen) {
-                    String str = "patrin[" + nodeId + "] " + i++;
-                    DatagramPacket datagramPacket = new DatagramPacket(str.getBytes(), str.getBytes().length, new InetSocketAddress(this.hostname, this._UDPServer_port));
-                    multicastSocket.send(datagramPacket);
+                if (!this.onlyListen) {
+                    request();
                 }
 
                 DatagramPacket receiveDatagramPacket = new DatagramPacket(data, data.length);
                 multicastSocket.receive(receiveDatagramPacket);
-                System.out.println(nodeId+new String(receiveDatagramPacket.getData()));
+//                System.out.println(nodeId + new String(receiveDatagramPacket.getData()));
+
+                String msg = new String(receiveDatagramPacket.getData());
+                Model model = (Model) JSONUtil.getJAVAObjectfromJSONString(msg, Model.class);
+                if (model.getWhoRequest() == WhoRequest.NODE && Objects.equals(model.getMessage(), "getCount")) {
+                    setModelPack();
+                    String msgJson = null;
+                    this.model.setMessage("count");
+                    msgJson = JSONUtil.getJSONStringfromJAVAObject(this.model);
+                    DatagramPacket datagramPacket = new DatagramPacket(msgJson.getBytes(), msgJson.getBytes().length, new InetSocketAddress(this.hostname, this._UDPServer_port));
+                    multicastSocket.send(datagramPacket);
+
+                }
                 Thread.sleep(1000);
             }
         } catch (Exception e) {
@@ -84,7 +132,7 @@ public class Node {
         }
     }
 
-    private void multicastSocketConfig(){
+    private void multicastSocketConfig() {
         this.multicastSocket = null;
         try {
             this.multicastSocket = new MulticastSocket(this._MulticastSocket_port);
@@ -94,6 +142,30 @@ public class Node {
             e.printStackTrace();
         }
     }
+
+    private void setModelPack() {
+        this.model.setNodeId(this.nodeId);
+        this.model.setMessage(this.message);
+        this.model.setWhoRequest(this.whoRequest);
+        this.model.setFromHostname(this.hostname);//localhost
+        this.model.setFromPort(this._UDPServer_port);//8888
+        this.model.setToHostname(this._MulticastSocket_broadcastIp);//233.0.0.1
+        this.model.setToPort(this._MulticastSocket_port);//1502
+        this.model.setCountConnections(this.countConnections);
+    }
+
+    public void request() {
+        setModelPack();
+        String msgJson = null;
+        try {
+            msgJson = JSONUtil.getJSONStringfromJAVAObject(model);
+            DatagramPacket datagramPacket = new DatagramPacket(msgJson.getBytes(), msgJson.getBytes().length, new InetSocketAddress(this.hostname, this._UDPServer_port));
+            multicastSocket.send(datagramPacket);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public String getNodeId() {
         return nodeId;
     }
@@ -106,108 +178,39 @@ public class Node {
         this.onlyListen = onlyListen;
     }
 
+    public void setEmpls(List<Empl> empls) {
+        this.model.setEmplList(empls);
+    }
 
+    public WhoRequest getWhoRequest() {
+        return whoRequest;
+    }
+
+    public void setWhoRequest(WhoRequest whoRequest) {
+        this.whoRequest = whoRequest;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public int getCountConnections() {
+        return countConnections;
+    }
+
+    public void setCountConnections(int countConnections) {
+        this.countConnections = countConnections;
+    }
+
+    public int getCountNodes() {
+        return countNodes;
+    }
+
+    public void setCountNodes(int countNodes) {
+        this.countNodes = countNodes;
+    }
 }
-
-//    DatagramSocket socket;
-//
-//    @Override
-//    public void run() {
-//        try {
-//            //Keep a socket open to listen to all the UDP trafic that is destined for this _UDPServer_port
-//            socket = new DatagramSocket(8888, InetAddress.getByName("0.0.0.0"));
-//            socket.setBroadcast(true);
-//
-//            while (true) {
-//                System.out.println(getClass().getName() + ">>>Ready to receive broadcast packets!");
-//
-//                //Receive a packet
-//                byte[] recvBuf = new byte[15000];
-//                DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
-//                socket.receive(packet);
-//
-//                //Packet received
-//                System.out.println(getClass().getName() + ">>>Discovery packet received from: " + packet.getAddress().getHostAddress());
-//                System.out.println(getClass().getName() + ">>>Packet received; data: " + new String(packet.getData()));
-//
-//                //See if the packet holds the right command (message)
-//                String message = new String(packet.getData()).trim();
-//                if (message.equals("DISCOVER_FUIFSERVER_REQUEST")) {
-//                    byte[] sendData = "DISCOVER_FUIFSERVER_RESPONSE".getBytes();
-//
-//                    //Send a response
-//                    DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, packet.getAddress(), packet.getPort());
-//                    socket.send(sendPacket);
-//
-//                    System.out.println(getClass().getName() + ">>>Sent packet to: " + sendPacket.getAddress().getHostAddress());
-//                }
-//            }
-//        } catch (IOException ex) {
-//            Logger.getLogger(DiscoveryThread.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
-
-//// Find the server using UDP broadcast
-//        try {
-//                //Open a random _UDPServer_port to send the package
-//                c = new DatagramSocket();
-//                c.setBroadcast(true);
-//
-//                byte[] sendData = "DISCOVER_FUIFSERVER_REQUEST".getBytes();
-//
-//                //Try the 255.255.255.255 first
-//                try {
-//                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("255.255.255.255"), 8888);
-//                c.send(sendPacket);
-//                System.out.println(getClass().getName() + ">>> Request packet sent to: 255.255.255.255 (DEFAULT)");
-//                } catch (Exception e) {
-//                }
-//
-//                // Broadcast the message over all the network interfaces
-//                Enumeration interfaces = NetworkInterface.getNetworkInterfaces();
-//                while (interfaces.hasMoreElements()) {
-//                NetworkInterface networkInterface = interfaces.nextElement();
-//
-//                if (networkInterface.isLoopback() || !networkInterface.isUp()) {
-//                continue; // Don't want to broadcast to the loopback interface
-//                }
-//
-//                for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
-//                InetAddress broadcast = interfaceAddress.getBroadcast();
-//                if (broadcast == null) {
-//                continue;
-//                }
-//
-//                // Send the broadcast package!
-//                try {
-//                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, 8888);
-//                c.send(sendPacket);
-//                } catch (Exception e) {
-//                }
-//
-//                System.out.println(getClass().getName() + ">>> Request packet sent to: " + broadcast.getHostAddress() + "; Interface: " + networkInterface.getDisplayName());
-//                }
-//                }
-//
-//                System.out.println(getClass().getName() + ">>> Done looping over all network interfaces. Now waiting for a reply!");
-//
-//                //Wait for a response
-//                byte[] recvBuf = new byte[15000];
-//                DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
-//                c.receive(receivePacket);
-//
-//                //We have a response
-//                System.out.println(getClass().getName() + ">>> Broadcast response from server: " + receivePacket.getAddress().getHostAddress());
-//
-//                //Check if the message is correct
-//                String message = new String(receivePacket.getData()).trim();
-//                if (message.equals("DISCOVER_FUIFSERVER_RESPONSE")) {
-//                //DO SOMETHING WITH THE SERVER'S IP (for example, store it in your controller)
-//                Controller_Base.setServerIp(receivePacket.getAddress());
-//                }
-//
-//                //Close the _UDPServer_port!
-//                c.close();
-//                } catch (IOException ex) {
-//                Logger.getLogger(LoginWindow.class.getName()).log(Level.SEVERE, null, ex);
-//        }

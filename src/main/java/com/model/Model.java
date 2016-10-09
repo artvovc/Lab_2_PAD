@@ -3,7 +3,7 @@ package com.model;
 import com.enums.RequestType;
 import com.enums.WhoRequest;
 
-import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Artemie on 04.10.2016.
@@ -12,15 +12,13 @@ public class Model {
     private String nodeId;
     private WhoRequest whoRequest;
     private RequestType requestType;
-    private String hostname;
-    private String port;
-    //
-    private Integer id;
-    private String firstname;
-    private String lastname;
-    private int age;
-    private int salary;
-    private Date createdDate;
+    private int fromPort;
+    private int toPort;//5051
+    private String fromHostname;
+    private String toHostname;//233.0.0.1
+    private String message;
+    private List<Empl> emplList;
+    private int countConnections;
 
     public String getNodeId() {
         return nodeId;
@@ -46,67 +44,59 @@ public class Model {
         this.requestType = requestType;
     }
 
-    public String getHostname() {
-        return hostname;
+    public String getFromHostname() {
+        return fromHostname;
     }
 
-    public void setHostname(String hostname) {
-        this.hostname = hostname;
+    public void setFromHostname(String fromHostname) {
+        this.fromHostname = fromHostname;
     }
 
-    public String getPort() {
-        return port;
+    public List<Empl> getEmplList() {
+        return emplList;
     }
 
-    public void setPort(String port) {
-        this.port = port;
+    public void setEmplList(List<Empl> emplList) {
+        this.emplList = emplList;
     }
 
-    public Integer getId() {
-        return id;
+    public int getFromPort() {
+        return fromPort;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setFromPort(int fromPort) {
+        this.fromPort = fromPort;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public int getToPort() {
+        return toPort;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setToPort(int toPort) {
+        this.toPort = toPort;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getToHostname() {
+        return toHostname;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setToHostname(String toHostname) {
+        this.toHostname = toHostname;
     }
 
-    public int getAge() {
-        return age;
+    public String getMessage() {
+        return message;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public int getSalary() {
-        return salary;
+    public int getCountConnections() {
+        return countConnections;
     }
 
-    public void setSalary(int salary) {
-        this.salary = salary;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
+    public void setCountConnections(int countConnections) {
+        this.countConnections = countConnections;
     }
 }
