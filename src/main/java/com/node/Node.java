@@ -31,6 +31,8 @@ public class Node {
     private int countConnections;
     private Model maven = new Model();
     private int countNodes;
+    private List<String> knownNodes;
+    private int _TCPServerPort;
 
 
     public Node(String hostname, int _UDPServer_port) throws Exception {
@@ -82,14 +84,21 @@ public class Node {
                     temp++;
                     msg = JSONUtil.getJSONStringfromJAVAObject(new Model());
 //                    System.out.println(msg);
-                    if(temp==countNodes) {
+                    if (temp == countNodes) {
 //                        System.out.println("MAVEN " + JSONUtil.getJSONStringfromJAVAObject(maven));
                         maven.setMessage("Imaven");
                         msg = JSONUtil.getJSONStringfromJAVAObject(maven);
-
                         DatagramPacket sendPacket = new DatagramPacket(msg.getBytes(), msg.getBytes().length, InetAddress.getByName("233.0.0.1"), receivePacket.getPort());
                         serverSocket.send(sendPacket);
                     }
+                }
+
+                if (model.getWhoRequest() == WhoRequest.USER && Objects.equals(model.getMessage(), "getTuples")) {
+                    this.maven.setMessage("sendTuplesToClient");
+                    this.maven.setTcpServerPort(model.getTcpServerPort());
+                    msg = JSONUtil.getJSONStringfromJAVAObject(maven);
+                    DatagramPacket sendPacket = new DatagramPacket(msg.getBytes(), msg.getBytes().length, InetAddress.getByName("233.0.0.1"), receivePacket.getPort());
+                    serverSocket.send(sendPacket);
                 }
 
                 if (model.getMessage() == null) msg = JSONUtil.getJSONStringfromJAVAObject(new Model());
@@ -100,7 +109,7 @@ public class Node {
         }
     }
 
-    public void runRequestToUDPServer() {
+    public void runListeningToUDPServer() {
         try {
             multicastSocketConfig();
             byte[] data = null;
@@ -127,17 +136,39 @@ public class Node {
                     DatagramPacket datagramPacket = new DatagramPacket(msgJson.getBytes(), msgJson.getBytes().length, new InetSocketAddress(this.hostname, this._UDPServer_port));
                     multicastSocket.send(datagramPacket);
                 }
-                if(Objects.equals(this.nodeId, "nodeClient") &&Objects.equals(model.getMessage(), "Imaven"))
-                {
+                if (Objects.equals(this.nodeId, "nodeClient") && Objects.equals(model.getMessage(), "Imaven")) {
                     this.maven = model;
-                    System.out.println("MAVEN " + JSONUtil.getJSONStringfromJAVAObject(maven));
+                    //AICI STARTEZ TCP SERVER PE UN PORT
 
+
+
+
+
+
+
+                    this.model.setMessage("getTuples");
+                    String msgJson = JSONUtil.getJSONStringfromJAVAObject(this.model);
+                    DatagramPacket datagramPacket = new DatagramPacket(msgJson.getBytes(), msgJson.getBytes().length, new InetSocketAddress(this.hostname, this._UDPServer_port));
+                    multicastSocket.send(datagramPacket);
+                    System.out.println("MAVEN " + JSONUtil.getJSONStringfromJAVAObject(maven));
+                }
+                if(Objects.equals(model.getMessage(), "sendTuplesToClient"))
+                {
+                    if(Objects.equals(this.nodeId, model.getNodeId())||check(this.nodeId,model.getKnownNodes())){
+                        System.out.println("wohoooooo "+this.nodeId);
+                    }
                 }
                 Thread.sleep(1000);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private boolean check(String nodeId, List<String> knownNodes) {
+        for (String knownNode : knownNodes)
+            if(Objects.equals(knownNode, nodeId)) return true;
+        return false;
     }
 
     private void multicastSocketConfig() {
@@ -159,7 +190,9 @@ public class Node {
         this.model.setFromPort(this._UDPServer_port);//8888
         this.model.setToHostname(this._MulticastSocket_broadcastIp);//233.0.0.1
         this.model.setToPort(this._MulticastSocket_port);//1502
+        this.model.setKnownNodes(this.knownNodes);
         this.model.setCountConnections(this.countConnections);
+        this.model.setTcpServerPort(this._TCPServerPort);
     }
 
     public void request() {
@@ -220,5 +253,21 @@ public class Node {
 
     public void setCountNodes(int countNodes) {
         this.countNodes = countNodes;
+    }
+
+    public List<String> getKnownNodes() {
+        return knownNodes;
+    }
+
+    public void setKnownNodes(List<String> knownNodes) {
+        this.knownNodes = knownNodes;
+    }
+
+    public int get_TCPServerPort() {
+        return _TCPServerPort;
+    }
+
+    public void set_TCPServerPort(int _TCPServerPort) {
+        this._TCPServerPort = _TCPServerPort;
     }
 }

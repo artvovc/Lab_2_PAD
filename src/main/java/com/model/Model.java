@@ -19,6 +19,8 @@ public class Model {
     private String message;
     private List<Empl> emplList;
     private int countConnections;
+    private List<String> knownNodes;
+    private int tcpServerPort;
 
     public String getNodeId() {
         return nodeId;
@@ -98,5 +100,21 @@ public class Model {
 
     public void setCountConnections(int countConnections) {
         this.countConnections = countConnections;
+    }
+
+    public List<String> getKnownNodes() {
+        return knownNodes;
+    }
+
+    public void setKnownNodes(List<String> knownNodes) {
+        this.knownNodes = knownNodes;
+    }
+
+    public int getTcpServerPort() {
+        return tcpServerPort;
+    }
+
+    public void setTcpServerPort(int tcpServerPort) {
+        this.tcpServerPort = tcpServerPort;
     }
 }

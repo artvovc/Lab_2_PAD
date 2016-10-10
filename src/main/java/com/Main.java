@@ -1,16 +1,9 @@
 package com;
 
-import com.enums.RequestType;
 import com.enums.WhoRequest;
 import com.model.Empl;
-import com.model.Model;
 import com.node.Node;
-import com.util.JSONUtil;
 
-import java.net.DatagramPacket;
-import java.net.InetSocketAddress;
-import java.net.MulticastSocket;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -44,44 +37,50 @@ public class Main {
         Node nodeOne = new Node(8888,1502,"127.0.0.1","233.0.0.1");
         nodeOne.setNodeId("nodeOne");
         nodeOne.setOnlyListen(true);
-        nodeOne.setCountConnections(1);
-        Thread node1 = new Thread(nodeOne::runRequestToUDPServer);
+        nodeOne.setKnownNodes(Arrays.asList("nodeTwo"));
+        nodeOne.setCountConnections(nodeOne.getKnownNodes().size());
+        Thread node1 = new Thread(nodeOne::runListeningToUDPServer);
         node1.start();
 
         Node nodeTwo = new Node(8888,1502,"127.0.0.1","233.0.0.1");
         nodeTwo.setNodeId("nodeTwo");
         nodeTwo.setOnlyListen(true);
-        nodeTwo.setCountConnections(3);
-        Thread node2 = new Thread(nodeTwo::runRequestToUDPServer);
+        nodeTwo.setKnownNodes(Arrays.asList("nodeOne","nodeSix","nodeThree"));
+        nodeTwo.setCountConnections(nodeTwo.getKnownNodes().size());
+        Thread node2 = new Thread(nodeTwo::runListeningToUDPServer);
         node2.start();
 
         Node nodeThree = new Node(8888,1502,"127.0.0.1","233.0.0.1");
         nodeThree.setNodeId("nodeThree");
         nodeThree.setOnlyListen(true);
-        nodeThree.setCountConnections(3);
-        Thread node3 = new Thread(nodeThree::runRequestToUDPServer);
+        nodeThree.setKnownNodes(Arrays.asList("nodeTwo","nodeFour","nodeFive"));
+        nodeThree.setCountConnections(nodeThree.getKnownNodes().size());
+        Thread node3 = new Thread(nodeThree::runListeningToUDPServer);
         node3.start();
 
         Node nodeFour = new Node(8888,1502,"127.0.0.1","233.0.0.1");
         nodeFour.setNodeId("nodeFour");
         nodeFour.setOnlyListen(true);
-        nodeFour.setCountConnections(1);
-        Thread node4 = new Thread(nodeFour::runRequestToUDPServer);
+        nodeFour.setKnownNodes(Arrays.asList("nodeThree"));
+        nodeFour.setCountConnections(nodeFour.getKnownNodes().size());
+        Thread node4 = new Thread(nodeFour::runListeningToUDPServer);
         node4.start();
 
 
         Node nodeFive = new Node(8888,1502,"127.0.0.1","233.0.0.1");
         nodeFive.setNodeId("nodeFive");
         nodeFive.setOnlyListen(true);
-        nodeFive.setCountConnections(1);
-        Thread node5 = new Thread(nodeFive::runRequestToUDPServer);
+        nodeFive.setKnownNodes(Arrays.asList("nodeThree"));
+        nodeFive.setCountConnections(nodeFive.getKnownNodes().size());
+        Thread node5 = new Thread(nodeFive::runListeningToUDPServer);
         node5.start();
 
         Node nodeSix = new Node(8888,1502,"127.0.0.1","233.0.0.1");
         nodeSix.setNodeId("nodeSix");
         nodeSix.setOnlyListen(true);
-        nodeSix.setCountConnections(1);
-        Thread node6 = new Thread(nodeSix::runRequestToUDPServer);
+        nodeSix.setKnownNodes(Arrays.asList("nodeTwo"));
+        nodeSix.setCountConnections(nodeSix.getKnownNodes().size());
+        Thread node6 = new Thread(nodeSix::runListeningToUDPServer);
         node6.start();
 
 
@@ -89,6 +88,7 @@ public class Main {
         //CLIENT
 
         Node nodeClient = new Node(8888,1502,"127.0.0.1","233.0.0.1");
+        nodeClient.set_TCPServerPort(5051);
         nodeClient.setNodeId("nodeClient");
         nodeClient.setWhoRequest(WhoRequest.USER);
         nodeClient.setMessage("maven");
@@ -97,9 +97,7 @@ public class Main {
                 new Empl(0,"jora","joranovic",21,20000, new Date().getTime()),
                 new Empl(1,"wartanov","next",20,211,new Date().getTime())
         ));
-//        Thread client = new Thread(nodeClient::runUDPServer);
-//        client.start();
-        Thread client = new Thread(nodeClient::runRequestToUDPServer);
+        Thread client = new Thread(nodeClient::runListeningToUDPServer);
         client.start();
         nodeClient.request();
 
