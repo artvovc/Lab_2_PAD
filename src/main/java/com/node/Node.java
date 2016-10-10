@@ -12,8 +12,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.*;
 import java.nio.channels.AsynchronousServerSocketChannel;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -65,18 +63,13 @@ public class Node {
             UDPServerStandardConfig();
             int temp = 0;
             while (true) {
-//                System.out.println("Server can receive now");
                 byte[] receiveBuff = new byte[1024];
                 DatagramPacket receivePacket = new DatagramPacket(receiveBuff, receiveBuff.length);
                 serverSocket.receive(receivePacket);
-//                System.out.println("Server received packet");
-//                System.out.println(receivePacket.getAddress() + " " + receivePacket.getPort());
-//                System.out.println(new String(receivePacket.getData()));
                 String msg = new String(receivePacket.getData());
                 Model model = (Model) JSONUtil.getJAVAObjectfromJSONString(msg, Model.class);
 
                 if (model.getWhoRequest() == WhoRequest.USER && Objects.equals(model.getMessage(), "maven")) {
-                    msg = "";
                     model = new Model();
                     model.setWhoRequest(WhoRequest.NODE);
                     model.setMessage("getCount");
@@ -89,9 +82,7 @@ public class Node {
                         maven = model;
                     temp++;
                     msg = JSONUtil.getJSONStringfromJAVAObject(new Model());
-//                    System.out.println(msg);
                     if (temp == countNodes) {
-//                        System.out.println("MAVEN " + JSONUtil.getJSONStringfromJAVAObject(maven));
                         maven.setMessage("Imaven");
                         msg = JSONUtil.getJSONStringfromJAVAObject(maven);
                         DatagramPacket sendPacket = new DatagramPacket(msg.getBytes(), msg.getBytes().length, InetAddress.getByName("233.0.0.1"), receivePacket.getPort());
@@ -108,7 +99,6 @@ public class Node {
                 }
 
                 if (model.getMessage() == null) msg = JSONUtil.getJSONStringfromJAVAObject(new Model());
-//                System.out.println("Server sended packet");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -123,15 +113,11 @@ public class Node {
             while (true) {
                 data = new byte[0];
                 data = new byte[1024];
-
                 if (!this.onlyListen) {
                     request();
                 }
-
                 DatagramPacket receiveDatagramPacket = new DatagramPacket(data, data.length);
                 multicastSocket.receive(receiveDatagramPacket);
-//                System.out.println(nodeId + new String(receiveDatagramPacket.getData()));
-
                 String msg = new String(receiveDatagramPacket.getData());
                 Model model = (Model) JSONUtil.getJAVAObjectfromJSONString(msg, Model.class);
                 if (model.getWhoRequest() == WhoRequest.NODE && Objects.equals(model.getMessage(), "getCount")) {
@@ -180,7 +166,7 @@ public class Node {
             AsynchronousServerSocketChannel server = null;
             try {
                 server = AsynchronousServerSocketChannel.open(null);
-                server.bind(new InetSocketAddress("127.0.0.1",this._TCPServerPort));
+                server.bind(new InetSocketAddress("127.0.0.1", this._TCPServerPort));
                 Attachment attachment = new Attachment();
                 attachment.setServer(server);
                 server.accept(attachment, new ConnectionHandler());
