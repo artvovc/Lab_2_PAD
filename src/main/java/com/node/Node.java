@@ -81,11 +81,12 @@ public class Node {
                         maven = model;
                     temp++;
                     msg = JSONUtil.getJSONStringfromJAVAObject(new Model());
-                    System.out.println(msg);
-                    if(temp>=countNodes)
-                        System.out.println("MAVEN BLEATI"+JSONUtil.getJSONStringfromJAVAObject(maven));
-                    DatagramPacket sendPacket = new DatagramPacket(msg.getBytes(), msg.getBytes().length, InetAddress.getByName("233.0.0.1"), receivePacket.getPort());
-                    serverSocket.send(sendPacket);
+//                    System.out.println(msg);
+                    if(temp==countNodes) {
+                        System.out.println("MAVEN " + JSONUtil.getJSONStringfromJAVAObject(maven));
+                        DatagramPacket sendPacket = new DatagramPacket(msg.getBytes(), msg.getBytes().length, InetAddress.getByName("233.0.0.1"), receivePacket.getPort());
+                        serverSocket.send(sendPacket);
+                    }
                 }
 
                 if (model.getMessage() == null) msg = JSONUtil.getJSONStringfromJAVAObject(new Model());
