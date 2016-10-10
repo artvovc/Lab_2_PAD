@@ -1,10 +1,13 @@
 package com;
 
+import com.database.Database;
 import com.enums.WhoRequest;
 import com.model.Empl;
 import com.node.Node;
+import com.sun.org.apache.xpath.internal.SourceTree;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 
 /**
@@ -39,6 +42,10 @@ public class Main {
         nodeOne.setOnlyListen(true);
         nodeOne.setKnownNodes(Arrays.asList("nodeTwo"));
         nodeOne.setCountConnections(nodeOne.getKnownNodes().size());
+        nodeOne.setEmpls(Arrays.asList(
+                new Empl(13,"rtuertu","vurturb",19,44534444, new Date().getTime()),
+                new Empl(12,"dfghdfgh","bvurtu",14,21555541,new Date().getTime())
+        ));
         Thread node1 = new Thread(nodeOne::runListeningToUDPServer);
         node1.start();
 
@@ -47,6 +54,10 @@ public class Main {
         nodeTwo.setOnlyListen(true);
         nodeTwo.setKnownNodes(Arrays.asList("nodeOne","nodeSix","nodeThree"));
         nodeTwo.setCountConnections(nodeTwo.getKnownNodes().size());
+        nodeTwo.setEmpls(Arrays.asList(
+                new Empl(11,"wertwert","vertkghb",19,445254444, new Date().getTime()),
+                new Empl(10,"tuertuerra","bvuetruertu",14,215255541,new Date().getTime())
+        ));
         Thread node2 = new Thread(nodeTwo::runListeningToUDPServer);
         node2.start();
 
@@ -55,6 +66,10 @@ public class Main {
         nodeThree.setOnlyListen(true);
         nodeThree.setKnownNodes(Arrays.asList("nodeTwo","nodeFour","nodeFive"));
         nodeThree.setCountConnections(nodeThree.getKnownNodes().size());
+        nodeThree.setEmpls(Arrays.asList(
+                new Empl(9,"awerrt","vyrtyb",19,441234444, new Date().getTime()),
+                new Empl(8,"trwerta","bertyev",14,21545551,new Date().getTime())
+        ));
         Thread node3 = new Thread(nodeThree::runListeningToUDPServer);
         node3.start();
 
@@ -63,6 +78,10 @@ public class Main {
         nodeFour.setOnlyListen(true);
         nodeFour.setKnownNodes(Arrays.asList("nodeThree"));
         nodeFour.setCountConnections(nodeFour.getKnownNodes().size());
+        nodeFour.setEmpls(Arrays.asList(
+                new Empl(6,"arte","evb",19,44442244, new Date().getTime()),
+                new Empl(7,"trae","bev",34,45541,new Date().getTime())
+        ));
         Thread node4 = new Thread(nodeFour::runListeningToUDPServer);
         node4.start();
 
@@ -72,6 +91,10 @@ public class Main {
         nodeFive.setOnlyListen(true);
         nodeFive.setKnownNodes(Arrays.asList("nodeThree"));
         nodeFive.setCountConnections(nodeFive.getKnownNodes().size());
+        nodeFive.setEmpls(Arrays.asList(
+                new Empl(4,"art","vb",19,444444, new Date().getTime()),
+                new Empl(5,"tra","bv",14,21555541,new Date().getTime())
+        ));
         Thread node5 = new Thread(nodeFive::runListeningToUDPServer);
         node5.start();
 
@@ -80,6 +103,10 @@ public class Main {
         nodeSix.setOnlyListen(true);
         nodeSix.setKnownNodes(Arrays.asList("nodeTwo"));
         nodeSix.setCountConnections(nodeSix.getKnownNodes().size());
+        nodeSix.setEmpls(Arrays.asList(
+                new Empl(2,"joras","joranovics",34,204000, new Date().getTime()),
+                new Empl(3,"wartanovs","nexts",24,2141,new Date().getTime())
+        ));
         Thread node6 = new Thread(nodeSix::runListeningToUDPServer);
         node6.start();
 
@@ -100,6 +127,13 @@ public class Main {
         Thread client = new Thread(nodeClient::runListeningToUDPServer);
         client.start();
         nodeClient.request();
+
+        Thread.sleep(5000);
+
+        Comparator<Empl> byEmployeeNumber = (e1, e2) -> Integer.compare(
+                e1.getId(), e2.getId());
+
+        Database.getInstance().getEmplList().stream().sorted(byEmployeeNumber).forEach(System.out::println);
 
         Thread.currentThread().join();
 

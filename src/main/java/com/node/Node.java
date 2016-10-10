@@ -1,13 +1,19 @@
 package com.node;
 
+import com.database.Database;
 import com.enums.RequestType;
 import com.enums.WhoRequest;
 import com.model.Empl;
 import com.model.Model;
 import com.util.JSONUtil;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.*;
+import java.nio.channels.AsynchronousServerSocketChannel;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -140,11 +146,7 @@ public class Node {
                     this.maven = model;
                     //AICI STARTEZ TCP SERVER PE UN PORT
 
-
-
-
-
-
+                    runTCPServer();
 
                     this.model.setMessage("getTuples");
                     String msgJson = JSONUtil.getJSONStringfromJAVAObject(this.model);
@@ -152,10 +154,17 @@ public class Node {
                     multicastSocket.send(datagramPacket);
                     System.out.println("MAVEN " + JSONUtil.getJSONStringfromJAVAObject(maven));
                 }
-                if(Objects.equals(model.getMessage(), "sendTuplesToClient"))
-                {
-                    if(Objects.equals(this.nodeId, model.getNodeId())||check(this.nodeId,model.getKnownNodes())){
-                        System.out.println("wohoooooo "+this.nodeId);
+                if (Objects.equals(model.getMessage(), "sendTuplesToClient")) {
+                    if (Objects.equals(this.nodeId, model.getNodeId()) || check(this.nodeId, model.getKnownNodes())) {
+                        Socket subscriberSocketClient = new Socket(model.getFromHostname(), model.getTcpServerPort());
+                        OutputStream out = subscriberSocketClient.getOutputStream();
+                        DataOutputStream DataSend = new DataOutputStream(out);
+                        String str = JSONUtil.getJSONStringfromJAVAObject(this.model);
+                        byte[] bytes = str.getBytes();
+                        DataSend.write(bytes, 0, bytes.length);
+                        out.close();
+                        DataSend.close();
+                        subscriberSocketClient.close();
                     }
                 }
                 Thread.sleep(1000);
@@ -165,9 +174,25 @@ public class Node {
         }
     }
 
+    private void runTCPServer() {
+        Database.getInstance().setEmplList(this.model.getEmplList());
+        new Thread(() -> {
+            AsynchronousServerSocketChannel server = null;
+            try {
+                server = AsynchronousServerSocketChannel.open(null);
+                server.bind(new InetSocketAddress("127.0.0.1",this._TCPServerPort));
+                Attachment attachment = new Attachment();
+                attachment.setServer(server);
+                server.accept(attachment, new ConnectionHandler());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
     private boolean check(String nodeId, List<String> knownNodes) {
         for (String knownNode : knownNodes)
-            if(Objects.equals(knownNode, nodeId)) return true;
+            if (Objects.equals(knownNode, nodeId)) return true;
         return false;
     }
 
