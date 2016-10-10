@@ -19,7 +19,7 @@ import java.util.Date;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        System.out.println("hello");
+
 
                 //DEMO ENUMS
 //        System.out.println(WhoRequest.USER);

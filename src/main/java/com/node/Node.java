@@ -83,14 +83,16 @@ public class Node {
                     msg = JSONUtil.getJSONStringfromJAVAObject(new Model());
 //                    System.out.println(msg);
                     if(temp==countNodes) {
-                        System.out.println("MAVEN " + JSONUtil.getJSONStringfromJAVAObject(maven));
+//                        System.out.println("MAVEN " + JSONUtil.getJSONStringfromJAVAObject(maven));
+                        maven.setMessage("Imaven");
+                        msg = JSONUtil.getJSONStringfromJAVAObject(maven);
+
                         DatagramPacket sendPacket = new DatagramPacket(msg.getBytes(), msg.getBytes().length, InetAddress.getByName("233.0.0.1"), receivePacket.getPort());
                         serverSocket.send(sendPacket);
                     }
                 }
 
                 if (model.getMessage() == null) msg = JSONUtil.getJSONStringfromJAVAObject(new Model());
-
 //                System.out.println("Server sended packet");
             }
         } catch (Exception e) {
@@ -124,6 +126,11 @@ public class Node {
                     msgJson = JSONUtil.getJSONStringfromJAVAObject(this.model);
                     DatagramPacket datagramPacket = new DatagramPacket(msgJson.getBytes(), msgJson.getBytes().length, new InetSocketAddress(this.hostname, this._UDPServer_port));
                     multicastSocket.send(datagramPacket);
+                }
+                if(Objects.equals(this.nodeId, "nodeClient") &&Objects.equals(model.getMessage(), "Imaven"))
+                {
+                    this.maven = model;
+                    System.out.println("MAVEN " + JSONUtil.getJSONStringfromJAVAObject(maven));
 
                 }
                 Thread.sleep(1000);
