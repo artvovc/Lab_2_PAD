@@ -27,7 +27,6 @@ public class Main {
 //        System.out.println(json);
 //        Model model2 = (Model)JSONUtil.getJAVAObjectfromJSONString(json,Model.class);
 //        System.out.println(model2.getNodeId());
-
                 //INSUSI LABUL
 
         Node nodeServer = new Node(8888,1502,"127.0.0.1","233.0.0.1");
@@ -138,7 +137,6 @@ public class Main {
                 = Database.getInstance().getEmplList().stream()
                 .collect(Collectors.groupingBy(Empl::getAge));
         System.out.println(totalByDept);
-
 
         Thread.currentThread().join();
 
