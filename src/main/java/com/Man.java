@@ -1,15 +1,14 @@
 package com;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 
 /**
- * Created by Artemie on 09.10.2016.
+ * Created by Artemie on 04.10.2016.
  */
-public class Man implements Runnable{
+public class Man implements Runnable {
 
     public static void main(String[] args) throws InterruptedException {
         Thread th = new Thread(new Man());
@@ -26,10 +25,10 @@ public class Man implements Runnable{
             multicastSocket.joinGroup(InetAddress.getByName("233.0.0.1"));
             byte[] data = null;
             int i = 0;
-            while(true) {
+            while (true) {
                 data = new byte[0];
 
-                String str = "patrin[1] "+i++;
+                String str = "patrin[1] " + i++;
                 DatagramPacket datagramPacket = new DatagramPacket(str.getBytes(), str.getBytes().length, new InetSocketAddress("127.0.0.1", 8888));
                 multicastSocket.send(datagramPacket);
 

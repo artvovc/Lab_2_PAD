@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by win on 10/10/16.
+ * Created by Artemie on 04.10.2016.
  */
 public class Database {
     private static Database ourInstance = new Database();

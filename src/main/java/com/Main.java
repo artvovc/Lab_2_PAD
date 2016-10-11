@@ -5,9 +5,9 @@ import com.enums.WhoRequest;
 import com.model.Empl;
 import com.node.Node;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Created by Artemie on 04.10.2016.
@@ -129,10 +129,16 @@ public class Main {
 
         Thread.sleep(5000);
 
-        Comparator<Empl> byEmployeeNumber = (e1, e2) -> Integer.compare(
-                e1.getId(), e2.getId());
+        System.out.println("Sorted by ID");
+        Database.getInstance().getEmplList().stream().sorted((e1, e2) -> Integer.compare(e1.getId(), e2.getId())).forEach(System.out::println);
+        System.out.println("Filtered by Age < 30");
+        Database.getInstance().getEmplList().stream().filter(empl -> empl.getAge()<30).forEach(System.out::println);
+        System.out.println("Grouped by Age");
+        Map<Integer, List<Empl>> totalByDept
+                = Database.getInstance().getEmplList().stream()
+                .collect(Collectors.groupingBy(Empl::getAge));
+        System.out.println(totalByDept);
 
-        Database.getInstance().getEmplList().stream().sorted(byEmployeeNumber).forEach(System.out::println);
 
         Thread.currentThread().join();
 
