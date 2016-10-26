@@ -22,11 +22,16 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="lab2pad" />
+        <module name="lab2pad-core" />
+        <module name="lab2pad-database" />
+        <module name="lab2pad-demo" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="lab2pad" target="1.8" />
+      <module name="lab2pad-core" target="1.8" />
+      <module name="lab2pad-database" target="1.8" />
+      <module name="lab2pad-demo" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

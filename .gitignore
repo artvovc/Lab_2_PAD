@@ -2,3 +2,9 @@
 /.idea/
 /target/
 /lab2pad.iml
+/lab2pad-database/lab2pad-database.iml
+/lab2pad-demo/lab2pad-demo.iml
+/lab2pad-core/lab2pad-core.iml
+/lab2pad-demo/target/
+/lab2pad-database/target/
+/lab2pad-core/target/
