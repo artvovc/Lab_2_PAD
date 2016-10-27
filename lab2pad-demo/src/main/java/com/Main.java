@@ -5,23 +5,18 @@ import com.enums.WhoRequest;
 import com.model.Empl;
 import com.node.Node;
 import com.util.xml.XMLDOMUtil;
+import com.util.xml.XMLSAXUtil;
 import org.w3c.dom.Document;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.util.xml.XMLFormater.printDocument;
+
 
 /**
  * Created by Artemie on 04.10.2016.
@@ -159,25 +154,22 @@ public class Main {
         printDocument(doc,System.out);
         xmldomUtil.createListFromDoc(doc).forEach(System.out::println);
 
+        //print to file
+        File file = new File("./src/main/resources/db.xml");
+        OutputStream output = new FileOutputStream(file);
+        printDocument(doc,output);
+
+
         //XML SAX DEMO
 
-
-
+        InputStream inputStream = Main.class.getResourceAsStream("/db.xml");
+        XMLSAXUtil xmlsaxUtil = new XMLSAXUtil(inputStream);
+        xmlsaxUtil.parse();
+        xmlsaxUtil.getXml();
 
 
         Thread.currentThread().join();
 
     }
-    public static void printDocument(Document doc, OutputStream out) throws IOException, TransformerException {
-        TransformerFactory tf = TransformerFactory.newInstance();
-        Transformer transformer = tf.newTransformer();
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
-        transformer.transform(new DOMSource(doc),
-                new StreamResult(new OutputStreamWriter(out, "UTF-8")));
-    }
 }
