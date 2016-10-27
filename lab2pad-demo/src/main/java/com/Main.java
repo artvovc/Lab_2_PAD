@@ -3,8 +3,10 @@ package com;
 import com.database.Database;
 import com.enums.WhoRequest;
 import com.model.Empl;
+import com.model.XmlReprezentationEmpls;
 import com.node.Node;
 import com.util.xml.XMLDOMUtil;
+import com.util.xml.XMLJAXBUtil;
 import com.util.xml.XMLSAXUtil;
 import org.w3c.dom.Document;
 
@@ -148,7 +150,10 @@ public class Main {
                 .collect(Collectors.groupingBy(Empl::getAge));
         System.out.println(totalByDept);
 
-        //XML DOM DEMO
+
+
+        //XML DOM DEMO ---------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------------
 
         XMLDOMUtil xmldomUtil = new XMLDOMUtil(Database.getInstance().getEmplList());
         Document doc = xmldomUtil.createXMLDoc();
@@ -161,12 +166,25 @@ public class Main {
         printDocument(doc,output);
 
 
-        //XML SAX DEMO
+        //XML SAX DEMO ---------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------------
 
         InputStream inputStream = new FileInputStream("/home/win/Workspace/bleadi/src/main/resources/db.xml");
         XMLSAXUtil xmlsaxUtil = new XMLSAXUtil(inputStream);
         xmlsaxUtil.parse();
         System.out.println(printXMLString(xmlsaxUtil.getXml()));
+
+
+        //XML JAXB DEMO ---------------------------------------------------------------------------
+        // ---------------------------------------------------------------------------------------
+
+        System.out.println("JAXB OUTPUT");
+
+        XmlReprezentationEmpls xmlReprezentationEmpls = new XmlReprezentationEmpls(Database.getInstance().getEmplList());
+
+        XMLJAXBUtil xmljaxbUtil = new XMLJAXBUtil(xmlReprezentationEmpls,"./src/main/resources/JAXBDB.xml");
+        xmljaxbUtil.printConsole();
+        xmljaxbUtil.printToFile();
 
         Thread.currentThread().join();
 

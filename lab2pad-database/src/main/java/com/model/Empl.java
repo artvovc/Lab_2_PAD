@@ -1,8 +1,14 @@
 package com.model;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Created by Artemie on 09.10.2016.
  */
+@XmlRootElement(name = "empl")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Empl {
     private Integer id;
     private String firstname;
