@@ -173,7 +173,7 @@ public class Main {
 
         System.out.println("\n\n[INFO] -> SAX OUTPUT");
         System.out.println("[INFO] -> SAX print parsed ../src/main/resources/db.xml with SAX parse util\n\n");
-        InputStream inputStream = new FileInputStream("/home/win/Workspace/bleadi/src/main/resources/db.xml");
+        InputStream inputStream = new FileInputStream("A:\\WorkSpace\\(PAD) laboratory\\Lab 2 PAD\\lab2pad\\src\\main\\resources\\db.xml");
         XMLSAXUtil xmlsaxUtil = new XMLSAXUtil(inputStream);
         xmlsaxUtil.parse();
         System.out.println(printXMLString(xmlsaxUtil.getXml()));
@@ -190,7 +190,7 @@ public class Main {
         xmljaxbUtil.printConsole();
         xmljaxbUtil.printToFile();
         System.out.println("\n\n[INFO] -> JAXB print unmarshalled data from file:../src/main/resources/JAXBDB.xml \n\n");
-        System.out.println(xmljaxbUtil.readFromFile("/home/win/Workspace/bleadi/src/main/resources/JAXBDB.xml"));
+        System.out.println(xmljaxbUtil.readFromFile("A:\\WorkSpace\\(PAD) laboratory\\Lab 2 PAD\\lab2pad\\src\\main\\resources\\JAXBDB.xml"));
 
         Thread.currentThread().join();
 
