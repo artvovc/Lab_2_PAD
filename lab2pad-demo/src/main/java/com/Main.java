@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.util.xml.XMLFormater.printDocument;
+import static com.util.xml.XMLFormater.printXMLString;
 
 
 /**
@@ -162,11 +163,10 @@ public class Main {
 
         //XML SAX DEMO
 
-        InputStream inputStream = Main.class.getResourceAsStream("/db.xml");
+        InputStream inputStream = new FileInputStream("/home/win/Workspace/bleadi/src/main/resources/db.xml");
         XMLSAXUtil xmlsaxUtil = new XMLSAXUtil(inputStream);
         xmlsaxUtil.parse();
-        xmlsaxUtil.getXml();
-
+        System.out.println(printXMLString(xmlsaxUtil.getXml()));
 
         Thread.currentThread().join();
 

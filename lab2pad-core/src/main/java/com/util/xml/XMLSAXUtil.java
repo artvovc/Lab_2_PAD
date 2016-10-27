@@ -80,34 +80,28 @@ public class XMLSAXUtil {
         @Override
         public void characters(char[] ch, int start, int length) throws SAXException {
             if (bId) {
-//            xml += "<id>" + new String(ch, start, length) + "</id>";
                 xml += new String(ch, start, length);
                 bId = false;
             }
             if (bFname) {
-//            xml += "<firstname>" + new String(ch, start, length) + "</firstname>";
                 xml += new String(ch, start, length);
-                bId = false;
+                bFname = false;
             }
             if (bLname) {
-//            xml += "<lastname>" + new String(ch, start, length) + "</lastname>";
                 xml += new String(ch, start, length);
-                bId = false;
+                bLname = false;
             }
             if (bAge) {
-//            xml += "<age>" + new String(ch, start, length) + "</age>";
                 xml += new String(ch, start, length);
-                bId = false;
+                bAge = false;
             }
             if (bSalary) {
-//            xml += "<salary>" + new String(ch, start, length) + "</salary>";
                 xml += new String(ch, start, length);
-                bId = false;
+                bSalary = false;
             }
             if (bCreatedDate) {
-//            xml += "<createdDate>" + new String(ch, start, length) + "</createdDate>";
                 xml += new String(ch, start, length);
-                bId = false;
+                bCreatedDate = false;
             }
         }
     }
