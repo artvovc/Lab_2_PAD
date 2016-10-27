@@ -26,4 +26,13 @@ public class XmlReprezentationEmpls {
     public void setEmpls(List<Empl> empls) {
         this.empls = empls;
     }
+
+    @Override
+    public String toString() {
+        String str="";
+        for (Empl empl : this.empls) {
+            str+=empl.toString()+"\n";
+        }
+        return str;
+    }
 }

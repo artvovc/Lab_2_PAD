@@ -155,12 +155,14 @@ public class Main {
         //XML DOM DEMO ---------------------------------------------------------------------------
         // ---------------------------------------------------------------------------------------
 
+        System.out.println("\n\n[INFO] -> DOM OUTPUT");
+        System.out.println("[INFO] -> DOM print from created document on console\n\n");
         XMLDOMUtil xmldomUtil = new XMLDOMUtil(Database.getInstance().getEmplList());
         Document doc = xmldomUtil.createXMLDoc();
         printDocument(doc,System.out);
         xmldomUtil.createListFromDoc(doc).forEach(System.out::println);
 
-        //print to file
+        System.out.println("\n\n[INFO] -> DOM print result to file, take a look to ../src/main/resources/db.xml");
         File file = new File("./src/main/resources/db.xml");
         OutputStream output = new FileOutputStream(file);
         printDocument(doc,output);
@@ -169,6 +171,8 @@ public class Main {
         //XML SAX DEMO ---------------------------------------------------------------------------
         // ---------------------------------------------------------------------------------------
 
+        System.out.println("\n\n[INFO] -> SAX OUTPUT");
+        System.out.println("[INFO] -> SAX print parsed ../src/main/resources/db.xml with SAX parse util\n\n");
         InputStream inputStream = new FileInputStream("/home/win/Workspace/bleadi/src/main/resources/db.xml");
         XMLSAXUtil xmlsaxUtil = new XMLSAXUtil(inputStream);
         xmlsaxUtil.parse();
@@ -178,13 +182,15 @@ public class Main {
         //XML JAXB DEMO ---------------------------------------------------------------------------
         // ---------------------------------------------------------------------------------------
 
-        System.out.println("JAXB OUTPUT");
-
+        System.out.println("\n\n[INFO] -> JAXB OUTPUT");
+        System.out.println("[INFO] -> JAXB print marshalled data to console and to file:../src/main/resources/JAXBDB.xml \n\n");
         XmlReprezentationEmpls xmlReprezentationEmpls = new XmlReprezentationEmpls(Database.getInstance().getEmplList());
 
         XMLJAXBUtil xmljaxbUtil = new XMLJAXBUtil(xmlReprezentationEmpls,"./src/main/resources/JAXBDB.xml");
         xmljaxbUtil.printConsole();
         xmljaxbUtil.printToFile();
+        System.out.println("\n\n[INFO] -> JAXB print unmarshalled data from file:../src/main/resources/JAXBDB.xml \n\n");
+        System.out.println(xmljaxbUtil.readFromFile("/home/win/Workspace/bleadi/src/main/resources/JAXBDB.xml"));
 
         Thread.currentThread().join();
 
