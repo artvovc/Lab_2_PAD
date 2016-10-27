@@ -5,7 +5,7 @@ import com.enums.RequestType;
 import com.enums.WhoRequest;
 import com.model.Empl;
 import com.model.Model;
-import com.util.JSONUtil;
+import com.util.json.JSONUtil;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -161,7 +161,7 @@ public class Node {
     }
 
     private void runTCPServer() {
-        Database.getInstance().setEmplList(this.model.getEmplList());
+        Database.getInstance().setEmplList(this.model.getEmpls());
         new Thread(() -> {
             AsynchronousServerSocketChannel server = null;
             try {
@@ -231,7 +231,7 @@ public class Node {
     }
 
     public void setEmpls(List<Empl> empls) {
-        this.model.setEmplList(empls);
+        this.model.setEmpls(empls);
     }
 
     public WhoRequest getWhoRequest() {

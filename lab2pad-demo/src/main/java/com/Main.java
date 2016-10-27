@@ -4,7 +4,19 @@ import com.database.Database;
 import com.enums.WhoRequest;
 import com.model.Empl;
 import com.node.Node;
+import com.util.xml.XMLDOMUtil;
+import org.w3c.dom.Document;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -140,7 +152,31 @@ public class Main {
                 .collect(Collectors.groupingBy(Empl::getAge));
         System.out.println(totalByDept);
 
+        //XML DEMO
+
+        XMLDOMUtil xmldomUtil = new XMLDOMUtil(Database.getInstance().getEmplList());
+        Document doc = xmldomUtil.createXMLDoc();
+
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(new File("/home/win/Workspace/file.xml"));
+
+        printDocument(doc,System.out);
+
         Thread.currentThread().join();
 
+    }
+    public static void printDocument(Document doc, OutputStream out) throws IOException, TransformerException {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+
+        transformer.transform(new DOMSource(doc),
+                new StreamResult(new OutputStreamWriter(out, "UTF-8")));
     }
 }

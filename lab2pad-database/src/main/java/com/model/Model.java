@@ -17,10 +17,10 @@ public class Model {
     private String fromHostname;
     private String toHostname;//233.0.0.1
     private String message;
-    private List<Empl> emplList;
     private int countConnections;
-    private List<String> knownNodes;
     private int tcpServerPort;
+    private List<String> knownNodes;
+    private List<Empl> empls;
 
     public String getNodeId() {
         return nodeId;
@@ -54,12 +54,12 @@ public class Model {
         this.fromHostname = fromHostname;
     }
 
-    public List<Empl> getEmplList() {
-        return emplList;
+    public List<Empl> getEmpls() {
+        return empls;
     }
 
-    public void setEmplList(List<Empl> emplList) {
-        this.emplList = emplList;
+    public void setEmpls(List<Empl> empls) {
+        this.empls = empls;
     }
 
     public int getFromPort() {

@@ -7,13 +7,13 @@ public class Empl {
     private Integer id;
     private String firstname;
     private String lastname;
-    private int age;
-    private int salary;
+    private Integer age;
+    private Integer salary;
     private Long createdDate;
 
     public Empl(){}
 
-    public Empl(Integer id, String firstname, String lastname, int age, int salary, Long createdDate) {
+    public Empl(Integer id, String firstname, String lastname, Integer age, Integer salary, Long createdDate) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -51,19 +51,19 @@ public class Empl {
         this.lastname = lastname;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 
-    public int getSalary() {
+    public Integer getSalary() {
         return salary;
     }
 
-    public void setSalary(int salary) {
+    public void setSalary(Integer salary) {
         this.salary = salary;
     }
 

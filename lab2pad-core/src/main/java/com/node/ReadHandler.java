@@ -2,7 +2,7 @@ package com.node;
 
 import com.database.Database;
 import com.model.Model;
-import com.util.JSONUtil;
+import com.util.json.JSONUtil;
 
 import java.nio.channels.CompletionHandler;
 import java.nio.charset.Charset;
@@ -21,7 +21,7 @@ class ReadHandler implements CompletionHandler<Integer, Attachment> {
         try {
             model = (Model) JSONUtil.getJAVAObjectfromJSONString(msg,Model.class);
             System.out.println(msg);
-            Database.getInstance().getEmplList().addAll(model.getEmplList());
+            Database.getInstance().getEmplList().addAll(model.getEmpls());
         } catch (Exception e) {
             e.printStackTrace();
         }
