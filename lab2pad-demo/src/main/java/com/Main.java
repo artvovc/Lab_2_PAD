@@ -152,17 +152,18 @@ public class Main {
                 .collect(Collectors.groupingBy(Empl::getAge));
         System.out.println(totalByDept);
 
-        //XML DEMO
+        //XML DOM DEMO
 
         XMLDOMUtil xmldomUtil = new XMLDOMUtil(Database.getInstance().getEmplList());
         Document doc = xmldomUtil.createXMLDoc();
-
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(new File("/home/win/Workspace/file.xml"));
-
         printDocument(doc,System.out);
+        xmldomUtil.createListFromDoc(doc).forEach(System.out::println);
+
+        //XML SAX DEMO
+
+
+
+
 
         Thread.currentThread().join();
 

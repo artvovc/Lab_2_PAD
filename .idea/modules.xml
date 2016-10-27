@@ -4,10 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/lab2pad.iml" filepath="$PROJECT_DIR$/lab2pad.iml" />
       <module fileurl="file://$PROJECT_DIR$/lab2pad-core/lab2pad-core.iml" filepath="$PROJECT_DIR$/lab2pad-core/lab2pad-core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lab2pad-core/lab2pad-core.iml" filepath="$PROJECT_DIR$/lab2pad-core/lab2pad-core.iml" />
       <module fileurl="file://$PROJECT_DIR$/lab2pad-database/lab2pad-database.iml" filepath="$PROJECT_DIR$/lab2pad-database/lab2pad-database.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lab2pad-database/lab2pad-database.iml" filepath="$PROJECT_DIR$/lab2pad-database/lab2pad-database.iml" />
-      <module fileurl="file://$PROJECT_DIR$/lab2pad-demo/lab2pad-demo.iml" filepath="$PROJECT_DIR$/lab2pad-demo/lab2pad-demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/lab2pad-demo/lab2pad-demo.iml" filepath="$PROJECT_DIR$/lab2pad-demo/lab2pad-demo.iml" />
     </modules>
   </component>

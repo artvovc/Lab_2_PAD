@@ -3,10 +3,13 @@ package com.util.xml;
 import com.model.Empl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +33,6 @@ public final class XMLDOMUtil {
         Element element = doc.createElement(nameNode);
         element.appendChild(doc.createTextNode((String)value));
         root.appendChild(element);
-//        root.appendChild(doc.createElement(nameNode).appendChild(doc.createTextNode((String) value)));
     }
 
     private void appendComplexListNode(Element root, String nameNode, List<Empl> values) {
@@ -52,10 +54,30 @@ public final class XMLDOMUtil {
         doc.appendChild(root);
         appendComplexListNode(root,"empl",this.empls);
         return doc;
-
     }
 
-    public List<Empl> getEmpls() {
-        return empls;
+    public List<Empl> createListFromDoc(Document doc){
+        this.empls = new ArrayList<Empl>();
+
+//        Element elem = doc.getElementById("empls");
+
+        NodeList nodes = doc.getElementsByTagName("empl");
+
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node tempNode = nodes.item(i);
+            Element tempElement = (Element) tempNode;
+            Empl tempEmpl = new Empl();
+
+            tempEmpl.setId(Integer.parseInt(tempElement.getElementsByTagName("id").item(0).getTextContent()));
+            tempEmpl.setFirstname(tempElement.getElementsByTagName("firstname").item(0).getTextContent());
+            tempEmpl.setLastname(tempElement.getElementsByTagName("lastname").item(0).getTextContent());
+            tempEmpl.setAge(Integer.parseInt(tempElement.getElementsByTagName("age").item(0).getTextContent()));
+            tempEmpl.setSalary(Integer.parseInt(tempElement.getElementsByTagName("salary").item(0).getTextContent()));
+            tempEmpl.setCreatedDate(Long.parseLong(tempElement.getElementsByTagName("createdDate").item(0).getTextContent()));
+
+            this.empls.add(tempEmpl);
+        }
+        return this.empls;
     }
+
 }
