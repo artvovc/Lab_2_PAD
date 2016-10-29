@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="empls" type="emplsType"/>
+  <xs:complexType name="emplType">
+    <xs:sequence>
+      <xs:element name="id" type="xs:string"/>
+      <xs:element name="firstname" type="xs:string"/>
+      <xs:element name="lastname" type="xs:string"/>
+      <xs:element name="age" type="xs:string"/>
+      <xs:element name="salary" type="xs:string"/>
+      <xs:element name="createdDate" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="emplsType">
+    <xs:sequence>
+      <xs:element type="emplType" name="empl" maxOccurs="unbounded" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

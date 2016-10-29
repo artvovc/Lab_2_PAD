@@ -8,6 +8,7 @@ import com.node.Node;
 import com.util.xml.XMLDOMUtil;
 import com.util.xml.XMLJAXBUtil;
 import com.util.xml.XMLSAXUtil;
+import com.util.xml.XSDValidator;
 import org.w3c.dom.Document;
 
 import java.io.*;
@@ -19,7 +20,6 @@ import java.util.stream.Collectors;
 
 import static com.util.xml.XMLFormater.printDocument;
 import static com.util.xml.XMLFormater.printXMLString;
-
 
 /**
  * Created by Artemie on 04.10.2016.
@@ -191,6 +191,17 @@ public class Main {
         xmljaxbUtil.printToFile();
         System.out.println("\n\n[INFO] -> JAXB print unmarshalled data from file:../src/main/resources/JAXBDB.xml \n\n");
         System.out.println(xmljaxbUtil.readFromFile("A:\\WorkSpace\\(PAD) laboratory\\Lab 2 PAD\\lab2pad\\src\\main\\resources\\JAXBDB.xml"));
+
+
+        // VALIDATE XML DOCUMENTS
+
+        System.out.println("\n\n[INFO] -> VALIDATE DB.xml");
+        System.out.println("[INFO] -> DB.xml is validated? "+ XSDValidator.validate(new FileInputStream("./src/main/resources/db.xml"),
+                                                                                    new FileInputStream("./src/main/resources/db.xsd")));
+        System.out.println("[INFO] -> VALIDATE JAXBDB.xml");
+        System.out.println("[INFO] -> JAXBDB.xml is validated? "+ XSDValidator.validate(new FileInputStream("./src/main/resources/JAXBDB.xml"),
+                new FileInputStream("./src/main/resources/JAXBDB.xsd")));
+
 
         Thread.currentThread().join();
 

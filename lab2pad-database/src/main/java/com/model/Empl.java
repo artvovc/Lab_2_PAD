@@ -30,7 +30,7 @@ public class Empl {
 
     @Override
     public String toString() {
-        return "Empl ( id="+id+", firstname="+firstname+", lastname"+lastname+", age="+age+", salary="+salary+", createdDate="+createdDate+");";
+        return "Empl ( id="+id+", firstname="+firstname+", lastname="+lastname+", age="+age+", salary="+salary+", createdDate="+createdDate+");";
     }
 
     public Integer getId() {
